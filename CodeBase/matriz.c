@@ -1,16 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct {
-    int **matriz;
-    int numVertices;
-} Grafo;
+#include "matriz.h";
 
-typedef Grafo *PonteiroGraffo;
-
-PonteiroGraffo inicializarGrafo(int numVertices) {
+PonteiroGrafo inicializarGrafo(int numVertices) {
     int linha, coluna;
-    PonteiroGraffo grafo = malloc(sizeof(Grafo));
+    PonteiroGrafo grafo = malloc(sizeof(Grafo));
 
     grafo->numVertices = numVertices;
     grafo->matriz = malloc(numVertices * sizeof(int *));
@@ -25,7 +20,7 @@ PonteiroGraffo inicializarGrafo(int numVertices) {
     return grafo;
 }
 
-void libearGrafo(PonteiroGraffo grafo) {
+void libearGrafo(PonteiroGrafo grafo) {
     int linha;
     for (linha = 0; linha < grafo->numVertices; linha++)
         free(grafo->matriz[linha]);
@@ -35,23 +30,23 @@ void libearGrafo(PonteiroGraffo grafo) {
     return;
 }
 
-void adicionarAresta(PonteiroGraffo grafo, int vertice1, int vertice2) {
+void adicionarAresta(PonteiroGrafo grafo, int vertice1, int vertice2) {
     grafo->matriz[vertice1][vertice2] = 1;
     grafo->matriz[vertice2][vertice1] = 1;
 }
 
-void removerAresta(PonteiroGraffo grafo, int vertice1, int vertice2) {
+void removerAresta(PonteiroGrafo grafo, int vertice1, int vertice2) {
     grafo->matriz[vertice1][vertice2] = 0;
     grafo->matriz[vertice2][vertice1] = 0;
 }
 
-int existeAresta(PonteiroGraffo grafo, int vertice1, int vertice2) {
+int existeAresta(PonteiroGrafo grafo, int vertice1, int vertice2) {
     return grafo->matriz[vertice1][vertice2];
 }
 
-PonteiroGraffo lerGrafo() {
+PonteiroGrafo criarGrafo() {
     int numArestas, numVertices, i, vertice1, vertice2;
-    PonteiroGraffo grafo;
+    PonteiroGrafo grafo;
 
     printf("Digite o número de vértices: ");
     scanf("%d", &numVertices);
@@ -72,7 +67,7 @@ PonteiroGraffo lerGrafo() {
     return grafo;
 }
 
-void imprimirArestas(PonteiroGraffo grafo) {
+void imprimirArestas(PonteiroGrafo grafo) {
     int vertice1, vertice2;
 
     for (vertice1 = 0; vertice1 < grafo->numVertices; vertice1++)
@@ -81,7 +76,7 @@ void imprimirArestas(PonteiroGraffo grafo) {
                 printf("{%d,%d}\n", vertice1, vertice2);
 }
 
-int grau(PonteiroGraffo grafo, int vertice) {
+int grau(PonteiroGrafo grafo, int vertice) {
     int i, grau = 0;
 
     for (i = 0; i < grafo->numVertices; i++)
@@ -91,9 +86,11 @@ int grau(PonteiroGraffo grafo, int vertice) {
     return grau;
 }
 
+/*
+
 int main() {
     int opcao, vertice1, vertice2, vertice;
-    PonteiroGraffo grafo = NULL;
+    PonteiroGrafo grafo = NULL;
 
     while(1) {
         printf("\nOpções:\n");
@@ -203,3 +200,5 @@ int main() {
 
     return 0;
 }
+
+*/
