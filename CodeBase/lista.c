@@ -38,7 +38,7 @@ void liberarLista(PonteiroNO lista) {
     return;
 }
 
-PonteiroGrafo liberarGrafo(PonteiroGrafo grafo) {
+void liberarGrafo(PonteiroGrafo grafo) {
     int indice;
     for (indice = 0; indice < grafo->numVertices; indice++)
         liberarLista(grafo->lista[indice]);
