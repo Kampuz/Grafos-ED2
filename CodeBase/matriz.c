@@ -20,7 +20,7 @@ PonteiroGrafo inicializarGrafo(int numVertices) {
     return grafo;
 }
 
-void libearGrafo(PonteiroGrafo grafo) {
+void liberarGrafo(PonteiroGrafo grafo) {
     int linha;
     for (linha = 0; linha < grafo->numVertices; linha++)
         free(grafo->matriz[linha]);
@@ -110,7 +110,7 @@ int main() {
             if (grafo != NULL)
                 libearGrafo(grafo);
 
-            grafo = lerGrafo();
+            grafo = criarGrafo();
             break;
         
         case 2:

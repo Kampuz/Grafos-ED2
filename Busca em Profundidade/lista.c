@@ -17,7 +17,7 @@ int *encontraComponentes(PonteiroGrafo grafo) {
 }
 
 void visitaRec(PonteiroGrafo grafo, int *componentes, int componente, int vertice) {
-    ponteiroNO no;
+    PonteiroNO no;
     componentes[vertice] = componente;
     for (no = grafo->lista[vertice]; no != NULL; no->proximo)
         if (componentes[no->vertice] == -1)
@@ -33,7 +33,7 @@ int *encontraCaminhos(PonteiroGrafo grafo, int s) {
 }
 
 void buscaEmProfundidade(PonteiroGrafo grafo, int *pai, int p, int vertice) {
-    ponteiroNO no;
+    PonteiroNO no;
     pai[vertice] = p;
     for (no = grafo->lista[vertice]; no != NULL; no->proximo)
         if (pai[no->vertice] == -1)
