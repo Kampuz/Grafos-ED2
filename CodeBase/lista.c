@@ -1,19 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct no {
-    int vertice;
-    struct no *proximo;
-} NO;
-
-typedef NO *PonteiroNO;
-
-typedef struct {
-    PonteiroNO *lista;
-    int numVertices;
-} Grafo;
-
-typedef Grafo *PonteiroGrafo;
+#include <lista.h>
 
 
 PonteiroGrafo criarGrafo(int numVertices) {

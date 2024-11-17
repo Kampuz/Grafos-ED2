@@ -126,6 +126,7 @@ int compararArestas(const void* a, const void* b) {
 void gerarArvoreMinima(PonteiroGrafo grafo) {
     Aresta* arestas = malloc(grafo->numVertices * grafo->numVertices * sizeof(Aresta));
     int numArestas = 0;
+    int pesoTotal = 0;
 
     for (int i = 0; i < grafo->numVertices; i++) {
         PonteiroNO auxiliar = grafo->lista[i];
@@ -152,9 +153,12 @@ void gerarArvoreMinima(PonteiroGrafo grafo) {
 
         if (find(uf, u) != find(uf, v)) {
             printf("{%d, %d} com peso %d\n", u, v, peso);
+            pesoTotal += peso;
             unionSets(uf, u, v);
         }
     }
+
+    printf("Peso total da MST: %d\n", pesoTotal);
 
     free(arestas);
     free(uf->parente);

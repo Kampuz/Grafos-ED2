@@ -7,25 +7,25 @@ typedef struct {
 } NO;
 
 typedef struct {
-    ponteiroNO *lista;
+    PonteiroNO *lista;
     int numVertices;
 } Grafo;
 
-typedef NO *ponteiroNO;
+typedef NO *PonteiroNO;
 
 typedef Grafo *PonteiroGrafo;
 
 PonteiroGrafo criarGrafo(int numVertices);
 
-void liberarLista(ponteiroNO lista);
+void liberarLista(PonteiroNO lista);
 
 void liberarGrafo(PonteiroGrafo grafo);
 
-ponteiroNO inserirLista(ponteiroNO lista, int vertice);
+PonteiroNO inserirLista(PonteiroNO lista, int vertice);
 
 void adicionarAresta(PonteiroGrafo grafo, int vertice1, int vertice2);
 
-ponteiroNO removerLista(ponteiroNO lista, int vertice);
+PonteiroNO removerLista(PonteiroNO lista, int vertice);
 
 void removerAresta(PonteiroGrafo grafo, int vertice1, int vertice2);
 
