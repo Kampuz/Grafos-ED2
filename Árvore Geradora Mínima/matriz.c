@@ -4,6 +4,7 @@
 
 #include "../CodeBase/matriz.h"
 
+
 void gerarArvoreMinima(PonteiroGrafo grafo) {
     int numVertices = grafo->numVertices;
     int *chave = (int*)malloc(numVertices * sizeof(int));
@@ -42,8 +43,11 @@ void gerarArvoreMinima(PonteiroGrafo grafo) {
     int pesoTotal = 0;
     for (int i = 1; i < numVertices; i++)
     {
-        printf("{%d, %d} com peso %d\n", pai[i], i, grafo->matriz[i][pai[i]]);
-        pesoTotal += grafo->matriz[i][pai[i]];
+        if (grafo->matriz[i][pai[i]] != INT_MAX)
+        {
+            printf("{%d, %d} com peso %d\n", pai[i], i, grafo->matriz[i][pai[i]]);
+            pesoTotal += grafo->matriz[i][pai[i]];
+        }
     }
     printf("Peso total da MST: %d\n", pesoTotal);
 
@@ -51,24 +55,3 @@ void gerarArvoreMinima(PonteiroGrafo grafo) {
     free(incluido);
     free(pai);
 }
-
-/*
-
-int main() {
-    int numVertices = 5;
-    PonteiroGrafo grafo = criarGrafo(numVertices);
-
-    adicionarAresta(grafo, 0, 1, 2);
-    adicionarAresta(grafo, 0, 3, 6);
-    adicionarAresta(grafo, 1, 3, 8);
-    adicionarAresta(grafo, 1, 2, 3);
-    adicionarAresta(grafo, 2, 3, 4);
-    adicionarAresta(grafo, 3, 4, 5);
-
-    gerarArvoreMinima(grafo);
-
-    liberarGrafo(grafo);
-    return 0;
-}
-
-*/

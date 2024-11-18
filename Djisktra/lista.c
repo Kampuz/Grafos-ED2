@@ -36,10 +36,10 @@ PonteiroGrafo criarGrafo(int numVertices) {
     PonteiroGrafo grafo = (PonteiroGrafo)malloc(sizeof(Grafo));
     grafo->numVertices = numVertices;
     grafo->lista = (PonteiroNO *)malloc(numVertices * sizeof(PonteiroNO));
+    
     for (int i = 0; i < numVertices; i++)
-    {
         grafo->lista[i] = NULL;
-    }
+    
     return grafo;
 }
 
@@ -138,7 +138,7 @@ int minimo(PonteiroHeap heap) {
 
 int prioridade(PonteiroHeap heap, int vertice) {
     int i = heap->indice[vertice];
-    return ((i != -1) ? heap->itens[i].prioridade : __INT_MAX__);
+    return ((i != -1) ? heap->itens[i].prioridade : IN);
 }
 
 void diminuirPrioridade(PonteiroHeap heap, int vertice, int novaPrioridade) {

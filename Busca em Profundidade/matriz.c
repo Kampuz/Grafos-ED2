@@ -17,7 +17,7 @@ int pilhaVazia(PonteiroPilha pilha) {
     return pilha->topo == -1;
 }
 
-void empilhar(PonteiroPilha pilha, int valor) {
+void empilhar(PonteiroPilha pilha,  int valor) {
     if (pilha->topo < pilha->capacidade - 1)
         pilha->dados[++(pilha->topo)] = valor;
 }
@@ -79,56 +79,3 @@ void imprimirCaminho(int vertice, int *pais) {
         imprimirCaminho(pais[vertice], pais);
     printf("%d ", vertice);
 }
-
-/*
-
-int main() {
-
-    PonteiroGrafo grafo;
-    int numVertices, origem, destino, inicio, opcao;
-    int *pais;
-
-    printf("Digite o número de vértices do grafo: ");
-    scanf("%d", &numVertices);
-
-    grafo = inicializarGrafo(numVertices);
-
-    printf("Deseja adicionar uma aresta? (1. Sim | 2. Não): ");
-
-    while (scanf("%d", &opcao) && opcao == 1)
-    {
-        printf("\nDigite a origem e o destino da aresta (ex: 0 1): ");
-        scanf("%d %d", &origem, &destino);
-        
-        adicionarAresta(grafo, origem, destino);
-
-        printf("Deseja adicionar outra aresta? (1. Sim | 2. Não): ");
-    }
-
-    printf("Digite o vértice de início para busca em profundidade: ");
-    scanf("%d", &inicio);
-
-    pais = buscaEmProfundidade(grafo, inicio);
-
-    printf("\nCaminhos a partir do vértice %d:\n", inicio);
-
-    for (int i = 0; i < numVertices; i++)
-    {
-        if (pais[i] != -1)
-        {
-            printf("Caminho até %d (ordem reversa): ", i);
-            imprimirCaminhoReverso(i, pais);
-            printf("\n");
-
-            printf("Caminho até %d (ordem normal): ", i);
-            imprimirCaminho(i, pais);
-            printf("\n");
-        }
-        
-    }
-    
-    free(pais);
-    liberarGrafo(grafo);
-}
-
-*/

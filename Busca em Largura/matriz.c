@@ -37,23 +37,3 @@ int *buscaEmLargura(PonteiroGrafo grafo, int inicio) {
     free(visitado);
     return pai;
 }
-
-/*
-
-int main() {
-    int numVertices = 5;
-    PonteiroGrafo grafo = inicializarGrafo(numVertices);
-
-    adicionarAresta(grafo, 0, 1);
-    adicionarAresta(grafo, 0, 2);
-    adicionarAresta(grafo, 1, 3);
-    adicionarAresta(grafo, 2, 4);
-
-    printf("Busca em Largura a partir do vértice 0:\n");
-    buscaEmLargura(grafo, 0);
-
-    liberarGrafo(grafo);
-    return 0;
-}
-
-*/

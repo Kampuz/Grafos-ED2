@@ -12,14 +12,11 @@ PonteiroGrafo inicializarGrafo(int numVertices);
 
 void liberarGrafo(PonteiroGrafo grafo);
 
-void adicionarAresta(PonteiroGrafo grafo, int vertice1, int vertice2);
-void adicionarArestaComPeso(PonteiroGrafo grafo, int vertice1, int vertice2, int peso);
+void inserirAresta(PonteiroGrafo grafo, int origem, int destino, int peso);
 
-void removerAresta(PonteiroGrafo grafo, int vertice1, int vertice2);
+void removerAresta(PonteiroGrafo grafo, int origem, int destino);
 
-int existeAresta(PonteiroGrafo grafo, int vertice1, int vertice2);
-
-PonteiroGrafo criarGrafo();
+int existeAresta(PonteiroGrafo grafo, int origem, int destino);
 
 void imprimirArestas(PonteiroGrafo Grafo);
 
@@ -50,13 +47,11 @@ int desempilhar(PonteiroPilha pilha);
 void destruirPilha(PonteiroPilha pilha);
 
 // ÁRVORE GERADORA MÍNIMA
-typedef struct {
-    int origem, destino, peso;
-} Aresta;
 
 void gerarArvoreMinima(PonteiroGrafo grafo);
 
 // DIJKSTRA
-void dijkstra(PonteiroGrafo grafo, int origem);
+void imprimirDjisktra(PonteiroGrafo grafo, int *pais, int verticeInicial);
+int *dijkstra(PonteiroGrafo grafo, int verticeInicial);
 
 #endif

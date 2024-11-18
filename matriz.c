@@ -4,7 +4,7 @@
 #include "CodeBase/matriz.h"
 
 int main() {
-    PonteiroGrafo grafo;
+    PonteiroGrafo grafo = NULL;
     int numVertices;
     int origem, destino, peso;
     int vertice, inicio;
@@ -16,7 +16,7 @@ int main() {
         printf("\nOpções:\n");
         printf("1 - Criar Grafo\n");
         printf("2 - Inserir Aresta\n");
-        printf("3 - Inserir Aresta com Peso");
+        printf("3 - Inserir Aresta com Peso\n");
         printf("4 - Remover Aresta\n");
         printf("5 - Verificar Aresta\n");
         printf("6 - Imprimir Arestas\n");
@@ -55,7 +55,7 @@ int main() {
                 printf("Digite o segundo vértice: ");
                 scanf("%d", &destino);
 
-                adicionarAresta(grafo, origem, destino);
+                inserirAresta(grafo, origem, destino, 1);
             }
             break;
 
@@ -73,7 +73,7 @@ int main() {
                 printf("Digite o peso: ");
                 scanf("%d", &peso);
 
-                adicionarArestaComPeso(grafo, origem, destino, peso);
+                inserirAresta(grafo, origem, destino, peso);
             }
             break;
 
@@ -198,19 +198,25 @@ int main() {
             break;
 
             case 10:
-                gerarArvoreMinima(grafo);
+                if (grafo == NULL)
+                {
+                    printf("O grafo não foi criado.\n");
+                } else {
+                    gerarArvoreMinima(grafo);
+                }
 
                 break;
 
             case 11:
                 if (grafo == NULL)
                 {
-                    printf("O grafo foi criado.\n");
+                    printf("O grafo não foi criado.\n");
                 }  else {
                     printf("Digite o vértice de origem para o algoritmo de Dijkstra: ");
                     scanf("%d", &origem);
 
-                    dijkstra(grafo, origem);
+                    caminho = dijkstra(grafo, origem);
+                    imprimirDjisktra(grafo, caminho, origem);
                 }
                 break;
 
