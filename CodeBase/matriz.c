@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "matriz.h";
+#include "matriz.h"
 
 PonteiroGrafo inicializarGrafo(int numVertices) {
     int linha, coluna;
-    PonteiroGrafo grafo = malloc(sizeof(Grafo));
+    PonteiroGrafo grafo = (PonteiroGrafo)malloc(sizeof(Grafo));
 
     grafo->numVertices = numVertices;
-    grafo->matriz = malloc(numVertices * sizeof(int *));
+    grafo->matriz = (int**)malloc(numVertices * sizeof(int *));
 
     for (linha = 0; linha < numVertices; linha++)
         grafo->matriz[linha] = malloc(numVertices * sizeof(int));

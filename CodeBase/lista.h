@@ -1,17 +1,17 @@
 #ifndef LISTA_
 #define LISTA_
 
-typedef struct {
+typedef struct no {
     int vertice;
     struct no *proximo;
 } NO;
 
-typedef struct {
+typedef NO *PonteiroNO;
+
+typedef struct grafo {
     PonteiroNO *lista;
     int numVertices;
 } Grafo;
-
-typedef NO *PonteiroNO;
 
 typedef Grafo *PonteiroGrafo;
 
@@ -33,4 +33,12 @@ int existeAresta(PonteiroGrafo grafo, int vertice1, int vertice2);
 
 void imprimirArestas(PonteiroGrafo Grafo);
 
+
+
+
+// BUSCA EM PROFUNDIDADE
+int *encontrarCaminhos(PonteiroGrafo grafo, int inicio);
+void buscaEmProfundidade(PonteiroGrafo grafo, int *pai, int p, int v);
+void imprimirCaminhoReverso(int vertice, int *pai);
+void imprimirCaminho(int vertice, int *pai);
 #endif

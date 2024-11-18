@@ -95,6 +95,8 @@ void buscaemLargura(PonteiroGrafo grafo, int inicio) {
     free(visitado);
 }
 
+/*
+
 int main() {
     int numVertices = 5;
     PonteiroGrafo grafo = criarGrafo(numVertices);
@@ -110,3 +112,5 @@ int main() {
     liberarGrafo(grafo);
     return 0;
 }
+
+*/

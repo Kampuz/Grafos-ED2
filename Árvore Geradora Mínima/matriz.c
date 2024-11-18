@@ -2,44 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 
-typedef struct {
-    int **matriz;
-    int numVertices;
-} Grafo;
-
-typedef Grafo *PonteiroGrafo;
-
-typedef struct {
-    int origem, destino, peso;
-} Aresta;
-
-PonteiroGrafo criarGrafo(int numVertices) {
-    PonteiroGrafo grafo = (PonteiroGrafo)malloc(sizeof(Grafo));
-    grafo->numVertices = numVertices;
-    grafo->matriz = (int**)malloc(numVertices * sizeof(int*));
-
-    for (int i = 0; i < numVertices; i++)
-    {
-        grafo->matriz[i] = (int*)malloc(numVertices * sizeof(int));
-        for (int j = 0; j < numVertices; j++)
-            grafo->matriz[i][j] = (i == j) ? 0 : INT_MAX;
-    }
-
-    return grafo;
-}
-
-void adicionarAresta(PonteiroGrafo grafo, int origem, int destino, int peso) {
-    grafo->matriz[origem][destino] = peso;
-    grafo->matriz[destino][origem] = peso;
-}
-
-void liberarGrafo(PonteiroGrafo grafo) {
-    for (int i = 0; i < grafo->numVertices; i++)
-        free(grafo->matriz[i]);
-
-    free(grafo->matriz);
-    free(grafo);
-}
+#include "../CodeBase/matriz.h"
 
 void gerarArvoreMinima(PonteiroGrafo grafo) {
     int numVertices = grafo->numVertices;
@@ -89,6 +52,7 @@ void gerarArvoreMinima(PonteiroGrafo grafo) {
     free(pai);
 }
 
+/*
 
 int main() {
     int numVertices = 5;
@@ -106,3 +70,5 @@ int main() {
     liberarGrafo(grafo);
     return 0;
 }
+
+*/

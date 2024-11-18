@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <lista.h>
+#include "lista.h"
 
 
 PonteiroGrafo criarGrafo(int numVertices) {
@@ -87,6 +87,8 @@ void imprimirArestas(PonteiroGrafo grafo) {
             printf("{%d,%d}\n", vertice1, auxiliar->vertice);
 }
 
+/*
+
 int main() {
     int opcao, vertice1, vertice2;
     PonteiroGrafo grafo = NULL;
@@ -170,3 +172,5 @@ int main() {
 
     return 0;
 }
+
+*/

@@ -166,6 +166,8 @@ void gerarArvoreMinima(PonteiroGrafo grafo) {
     free(uf);
 }
 
+/*
+
 int main() {
     int numVertices = 5;
     PonteiroGrafo grafo = criarGrafo(numVertices);
@@ -182,3 +184,5 @@ int main() {
     liberarGrafo(grafo);
     return 0;
 }
+
+*/
