@@ -4,12 +4,14 @@
 typedef struct no {
     int vertice;
     struct no *proximo;
-} NO;
+    int peso;
+} No;
 
-typedef NO *PonteiroNO;
+typedef No *PonteiroNo;
 
 typedef struct grafo {
-    PonteiroNO *lista;
+    // Vetor de vértices
+    PonteiroNo *listaAdjacentes;
     int numVertices;
 } Grafo;
 
@@ -17,28 +19,34 @@ typedef Grafo *PonteiroGrafo;
 
 PonteiroGrafo criarGrafo(int numVertices);
 
-void liberarLista(PonteiroNO lista);
+void liberarLista(PonteiroNo lista);
 
 void liberarGrafo(PonteiroGrafo grafo);
 
-PonteiroNO inserirLista(PonteiroNO lista, int vertice);
+PonteiroNo inserirLista(PonteiroNo lista, int vertice);
 
-void adicionarAresta(PonteiroGrafo grafo, int vertice1, int vertice2);
+void adicionarAresta(PonteiroGrafo grafo, int origem, int destino);
 
-PonteiroNO removerLista(PonteiroNO lista, int vertice);
+PonteiroNo removerLista(PonteiroNo lista, int vertice);
 
-void removerAresta(PonteiroGrafo grafo, int vertice1, int vertice2);
+void removerAresta(PonteiroGrafo grafo, int origem, int destino);
 
-int existeAresta(PonteiroGrafo grafo, int vertice1, int vertice2);
+int existeAresta(PonteiroGrafo grafo, int origem, int destino);
 
 void imprimirArestas(PonteiroGrafo Grafo);
 
-
-
-
 // BUSCA EM PROFUNDIDADE
+
 int *encontrarCaminhos(PonteiroGrafo grafo, int inicio);
 void buscaEmProfundidade(PonteiroGrafo grafo, int *pai, int p, int v);
 void imprimirCaminhoReverso(int vertice, int *pai);
 void imprimirCaminho(int vertice, int *pai);
+
+// BUSCA EM LARGURA
+
+// DIJIKSTRA
+
+// ARVORE GERADORA MÍNIMA
+
+
 #endif

@@ -9,35 +9,32 @@ PonteiroGrafo criarGrafo(int numVertices) {
     PonteiroGrafo grafo = malloc(sizeof(Grafo));
 
     grafo->numVertices = numVertices;
-    grafo->lista = malloc(numVertices *sizeof(PonteiroNO));
+    grafo->listaAdjacentes = malloc(numVertices * sizeof(PonteiroNo));
 
     for (indice = 0; indice < numVertices; indice++)
-        grafo->lista[indice] = NULL;
+        grafo->listaAdjacentes[indice] = NULL;
 
     return grafo;
 }
 
-void liberarLista(PonteiroNO lista) {
-    if (lista != NULL)
-    {
+void liberarLista(PonteiroNo lista) {
+    if (lista != NULL) {
         liberarLista(lista->proximo);
         free(lista);
     }
-    return;
 }
 
 void liberarGrafo(PonteiroGrafo grafo) {
     int indice;
     for (indice = 0; indice < grafo->numVertices; indice++)
-        liberarLista(grafo->lista[indice]);
-
-    free(grafo->lista);
+        liberarLista(grafo->listaAdjacentes[indice]);
+    free(grafo->listaAdjacentes);
     free(grafo);
     return;
 }
 
-PonteiroNO inserirLista(PonteiroNO lista, int vertice) {
-    PonteiroNO novoNo = malloc(sizeof(NO));
+PonteiroNo inserirLista(PonteiroNo lista, int vertice) {
+    PonteiroNo novoNo = malloc(sizeof(No));
     
     novoNo->vertice = vertice;
     novoNo->proximo = lista;
@@ -45,13 +42,12 @@ PonteiroNO inserirLista(PonteiroNO lista, int vertice) {
     return novoNo;
 }
 
-void adicionarAresta(PonteiroGrafo grafo, int vertice1, int vertice2) {
-    grafo->lista[vertice2] = inserirLista(grafo->lista[vertice2], vertice1);
-    grafo->lista[vertice1] = inserirLista(grafo->lista[vertice1], vertice2);
+void adicionarAresta(PonteiroGrafo grafo, int origem, int destino) {
+    grafo->listaAdjacentes[destino] = inserirLista(grafo->listaAdjacentes[destino], origem);
 }
 
-PonteiroNO removerLista(PonteiroNO lista, int vertice) {
-    PonteiroNO proximo;
+PonteiroNo removerLista(PonteiroNo lista, int vertice) {
+    PonteiroNo proximo;
     if (lista == NULL)
         return NULL;
     else if (lista->vertice == vertice) {
@@ -64,33 +60,48 @@ PonteiroNO removerLista(PonteiroNO lista, int vertice) {
     }
 }
 
-void removerAresta(PonteiroGrafo grafo, int vertices1, int vertices2) {
-    grafo->lista[vertices1] = removerLista(grafo->lista[vertices1], vertices2);
-    grafo->lista[vertices2] = removerLista(grafo->lista[vertices2], vertices1);
+void removerAresta(PonteiroGrafo grafo, int origem, int destino) {
+    grafo->listaAdjacentes[origem] = removerLista(grafo->listaAdjacentes[origem], destino);
 }
 
-int existeAresta(PonteiroGrafo grafo, int vertice1, int vertice2) {
-    PonteiroNO auxiliar;
-    for (auxiliar = grafo->lista[vertice1]; auxiliar != NULL; auxiliar = auxiliar->proximo)
-        if (auxiliar->vertice == vertice2)
+int existeAresta(PonteiroGrafo grafo, int origem, int destino) {
+    PonteiroNo auxiliar;
+    for (auxiliar = grafo->listaAdjacentes[origem]; auxiliar != NULL; auxiliar = auxiliar->proximo)
+        if (auxiliar->vertice == destino)
             return 1;
     
     return 0;
 }
 
 void imprimirArestas(PonteiroGrafo grafo) {
-    int vertice1;
-    PonteiroNO auxiliar;
+    int origem;
+    PonteiroNo auxiliar;
 
-    for (vertice1 = 0; vertice1 < grafo->numVertices; vertice1++)
-        for (auxiliar = grafo->lista[vertice1]; auxiliar != NULL; auxiliar = auxiliar->proximo)
-            printf("{%d,%d}\n", vertice1, auxiliar->vertice);
+    for (origem = 0; origem < grafo->numVertices; origem++)
+        for (auxiliar = grafo->listaAdjacentes[origem]; auxiliar != NULL; auxiliar = auxiliar->proximo)
+            printf("{%d,%d}\n", origem, auxiliar->vertice);
 }
 
-/*
+/** TODO:
+ * (Implementados em Matriz, mas não lista)
+ * GRAU, POPULARIDADE, RECOMENDAÇÕES
+ * 
+ * (Não Implementados, talvez não obrigatório)
+ * ENCONTRAR COMPONENTES (componentes conexos)
+ * ENCONTRAR CAMINHO
+ * IMPRIMIR CAMINHO e CAMINHO REVERSO
+ * ORDENAÇÃO TOPOLÓGICA
+ * 
+ * (Não Implementados, obrigatório)
+ * BUSCA EM PROFUNDIDADE
+ * BUSCA EM LARGURA
+ * DIJIKSTRA
+ * ÁRVORE GERADORA MÍNIMA
+ */
 
+/*
 int main() {
-    int opcao, vertice1, vertice2;
+    int opcao, origem, destino;
     PonteiroGrafo grafo = NULL;
 
     while (1) {
@@ -119,10 +130,10 @@ int main() {
                     printf("O grafo não foi criado.\n");
                 } else {
                     printf("Digite o primeiro vértice: ");
-                    scanf("%d", &vertice1);
+                    scanf("%d", &origem);
                     printf("Digite o segundo vértice: ");
-                    scanf("%d", &vertice2);
-                    adicionarAresta(grafo, vertice1, vertice2);
+                    scanf("%d", &destino);
+                    adicionarAresta(grafo, origem, destino);
                 }
                 break;
             case 3:
@@ -130,10 +141,10 @@ int main() {
                     printf("O grafo não foi criado.\n");
                 } else {
                     printf("Digite o primeiro vértice: ");
-                    scanf("%d", &vertice1);
+                    scanf("%d", &origem);
                     printf("Digite o segundo vértice: ");
-                    scanf("%d", &vertice2);
-                    removerAresta(grafo, vertice1, vertice2);
+                    scanf("%d", &destino);
+                    removerAresta(grafo, origem, destino);
                 }
                 break;
             case 4:
@@ -141,13 +152,13 @@ int main() {
                     printf("O grafo não foi criado.\n");
                 } else {
                     printf("Digite o primeiro vértice: ");
-                    scanf("%d", &vertice1);
+                    scanf("%d", &origem);
                     printf("Digite o segundo vértice: ");
-                    scanf("%d", &vertice2);
-                    if (existeAresta(grafo, vertice1, vertice2)) {
-                        printf("Existe uma aresta entre %d e %d.\n", vertice1, vertice2);
+                    scanf("%d", &destino);
+                    if (existeAresta(grafo, origem, destino)) {
+                        printf("Existe uma aresta entre %d e %d.\n", origem, destino);
                     } else {
-                        printf("Não existe uma aresta entre %d e %d.\n", vertice1, vertice2);
+                        printf("Não existe uma aresta entre %d e %d.\n", origem, destino);
                     }
                 }
                 break;
