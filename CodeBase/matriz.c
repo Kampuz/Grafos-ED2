@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "matriz.h"
 
@@ -16,6 +17,26 @@ PonteiroGrafo inicializarGrafo(int numVertices) {
     for (linha = 0; linha < numVertices; linha++)
         for (coluna = 0; coluna < numVertices; coluna++)
             grafo->matriz[linha][coluna] = 0;
+    
+    return grafo;
+}
+
+PonteiroGrafo criarGrafo(int numVertices) {
+    int linha, coluna;
+    PonteiroGrafo grafo = (PonteiroGrafo)malloc(sizeof(Grafo));
+
+    grafo->numVertices = numVertices;
+    grafo->matriz = (int**)malloc(numVertices * sizeof(int*));
+
+    for (linha = 0; linha < numVertices; linha++)
+        grafo->matriz[linha] = (int*)malloc(numVertices * sizeof(int));
+
+    for (linha = 0; linha < numVertices; linha++)
+        for (coluna = 0; coluna < numVertices; coluna++)
+            if (linha == coluna)
+                grafo->matriz[linha][coluna] = 0;
+            else
+                grafo->matriz[linha][coluna] = INT_MAX;
     
     return grafo;
 }

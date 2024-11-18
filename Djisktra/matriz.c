@@ -56,9 +56,10 @@ void descer(PonteiroHeap heap, int i) {
         menor = esq;
     if ((dir < heap->numVertices) && (heap->vertice[dir].prioridade < heap->vertice[menor].prioridade))
         menor = dir;
-    if (menor != i)
+    if (menor == i) { 
         trocar(heap, i, menor);
         descer(heap, menor);
+    }
 }
 
 void inserirHeap(PonteiroHeap heap, int vertice, int prioridade) {
@@ -111,6 +112,13 @@ int *dijkstra(PonteiroGrafo grafo, int verticeInicial) {
     int *pai = (int*)malloc(grafo->numVertices * sizeof(int));
     int *distancias = (int*)malloc(grafo->numVertices * sizeof(int));
 
+    if (!pai || !distancias)
+    {
+        printf("Erro: Falha ao alocar memória.\n");
+        exit(1);
+    }
+    
+
     for (vertice = 0; vertice < grafo->numVertices; vertice++)
     {
         distancias[vertice] = INT_MAX;
@@ -120,6 +128,15 @@ int *dijkstra(PonteiroGrafo grafo, int verticeInicial) {
     distancias[verticeInicial] = 0;
 
     PonteiroHeap heap = criarHeap(grafo->numVertices);
+    if (!heap)
+    {
+        printf("Erro: Falha ao criar o heap.\n");
+        free(pai);
+        free(distancias);
+        exit(1);
+    }
+    
+
     for (vertice = 0; vertice < grafo->numVertices; vertice++)
     {
         inserirHeap(heap, vertice, distancias[vertice]);
@@ -130,6 +147,8 @@ int *dijkstra(PonteiroGrafo grafo, int verticeInicial) {
     while (!heapVazio(heap))
     {
         vertice = extrairMinimo(heap);
+        if (vertice == -1)
+            break;
 
         if (distancias[vertice] != INT_MAX)
             for (int indice = 0; indice < grafo->numVertices; indice++)
@@ -140,7 +159,10 @@ int *dijkstra(PonteiroGrafo grafo, int verticeInicial) {
                     diminuirPrioridade(heap, indice, distancias[indice]);
                 }
     }
-    free(distancias);
+    free(heap->vertice);
+    free(heap->indice);
+    free(heap);
+
     return pai;
 }
 
@@ -153,33 +175,52 @@ void imprimirDjisktra(PonteiroGrafo grafo, int *pais, int verticeInicial) {
 
     free(pais);
 }
-/*
 
 int main() {
-    int matriz[5][5] = {
-        {0, 10, INT_MAX, INT_MAX, INT_MAX},
-        {10, 0, 20, INT_MAX, INT_MAX},
-        {INT_MAX, 20, 0, 5, INT_MAX},
-        {INT_MAX, INT_MAX, 5, 0, 2},
-        {INT_MAX, INT_MAX, INT_MAX, 2, 0}
-    };
+    int numVertices = 6;
+    PonteiroGrafo grafo = criarGrafo(numVertices);
 
-    PonteiroGrafo grafo = inicializarGrafo(5);
+    inserirAresta(grafo, 0, 1, 4);
+    inserirAresta(grafo, 0, 2, 2);
+    inserirAresta(grafo, 1, 2, 5);
+    inserirAresta(grafo, 1, 3, 10);
+    inserirAresta(grafo, 2, 4, 3);
+    inserirAresta(grafo, 4, 3, 4);
+    inserirAresta(grafo, 3, 5, 11);
 
-    grafo->matriz = matriz;
+    for (int i = 0; i < numVertices; i++)
+        for (int j = 0; j < numVertices; j++)
+            if (grafo->matriz[i][j] != INT_MAX)
+                grafo->matriz[j][i] = grafo->matriz[i][j];
+    
+    printf("Matriz de Adjacência:\n");
+    for (int i = 0; i < numVertices; i++)
+    {
+        for (int j = 0; j < numVertices; j++)
+            if (grafo->matriz[i][j] == INT_MAX)
+                printf("INF ");
+            else
+                printf("%3d ", grafo->matriz[i][j]);
+
+        printf("\n");
+    }
 
     int verticeInicial = 0;
 
+    printf("Calculando Dijkstra...\n");
     int *pais = dijkstra(grafo, verticeInicial);
+    printf("Dijkstra calculado com sucesso.\n");
 
-    printf("Pais de cada vértice a partir do vértice %d:\n", verticeInicial);
+    printf("Imprimindo Dijkstra...\n");
+    imprimirDjisktra(grafo, pais, verticeInicial);
+    printf("Dijkstra imprimido com sucesso.\n");
+
     for (int i = 0; i < grafo->numVertices; i++)
     {
-        printf("Vértice %d: Pai = %d\n", i, pais[i]);
+        free(grafo->matriz[i]);
     }
-
-    free(pais);
+    
+    free(grafo->matriz);
+    free(grafo);
     return 0;
 }
-
-*/

@@ -4,7 +4,6 @@
 
 #include "../CodeBase/matriz.h"
 
-
 void gerarArvoreMinima(PonteiroGrafo grafo) {
     int numVertices = grafo->numVertices;
     int *chave = (int*)malloc(numVertices * sizeof(int));
@@ -54,4 +53,30 @@ void gerarArvoreMinima(PonteiroGrafo grafo) {
     free(chave);
     free(incluido);
     free(pai);
+}
+
+int main() {
+    int numVertices = 5;
+    PonteiroGrafo grafo = criarGrafo(numVertices);
+    
+    inserirAresta(grafo, 0, 1, 2);
+    inserirAresta(grafo, 0, 3, 6);
+    inserirAresta(grafo, 1, 2, 3);
+    inserirAresta(grafo, 1, 3, 8);
+    inserirAresta(grafo, 1, 4, 5);
+    inserirAresta(grafo, 2, 4, 7);
+    inserirAresta(grafo, 3, 4, 9);
+
+    for (int i = 0; i < numVertices; i++)
+        for (int j = 0; j < numVertices; j++)
+            if (grafo->matriz[i][j] == INT_MAX)
+                printf("INF ");
+            else
+                printf("%d ", grafo->matriz[i][j]);
+            printf("\n");
+
+    gerarArvoreMinima(grafo);
+
+    liberarGrafo(grafo);
+    return 0;
 }

@@ -47,7 +47,7 @@ int desempilhar(PonteiroPilha pilha);
 void destruirPilha(PonteiroPilha pilha);
 
 // ÁRVORE GERADORA MÍNIMA
-
+PonteiroGrafo criarGrafo(int numVertices);
 void gerarArvoreMinima(PonteiroGrafo grafo);
 
 // DIJKSTRA
