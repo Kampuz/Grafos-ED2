@@ -1,65 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct no {
-    int vertice;
-    struct no * proximo;
-} NO;
-
-typedef struct {
-    struct no **lista;
-    int numVertices;
-} Grafo;
-
-typedef NO *PonteiroNO;
-
-typedef Grafo *PonteiroGrafo;
-
-PonteiroGrafo criarGrafo(int numVertices) {
-    int indice;
-    PonteiroGrafo grafo = (PonteiroGrafo)malloc(sizeof(Grafo));
-
-    grafo->numVertices = numVertices;
-    grafo->lista = (PonteiroNO*)malloc(numVertices * sizeof(PonteiroNO));
-
-    for (indice = 0; indice < numVertices; indice++)
-        grafo->lista[indice] = NULL;
-
-    return grafo;
-}
-
-void liberarLista(PonteiroNO lista) {
-    if (lista != NULL)
-    {
-        liberarLista(lista->proximo);
-        free(lista);
-    }
-    return;
-}
-
-void liberarGrafo(PonteiroGrafo grafo) {
-    int indice;
-    for (indice = 0; indice < grafo->numVertices; indice++)
-        liberarLista(grafo->lista[indice]);
-    
-    free(grafo->lista);
-    free(grafo);
-    return;
-}
-
-PonteiroNO inserirLista(PonteiroNO lista, int vertice) {
-    PonteiroNO novoNo = (PonteiroNO)malloc(sizeof(NO));
-
-    novoNo->vertice = vertice;
-    novoNo->proximo = lista;
-
-    return novoNo;
-}
-
-void adicionarAresta(PonteiroGrafo grafo, int vertice1, int vertice2) {
-    grafo->lista[vertice2] = inserirLista(grafo->lista[vertice2], vertice1);
-    grafo->lista[vertice1] = inserirLista(grafo->lista[vertice1], vertice2);
-}
+#include "../CodeBase/lista.h"
 
 void buscaemLargura(PonteiroGrafo grafo, int inicio) {
     int *visitado = (int*)malloc(grafo->numVertices * sizeof(int));
@@ -73,16 +15,13 @@ void buscaemLargura(PonteiroGrafo grafo, int inicio) {
     fila[tras++] = inicio;
     visitado[inicio] = 1;
 
-    while (frente < tras)
-    {
+    while (frente < tras) {
         int verticeAtual = fila[frente++];
         printf("Visitando %d\n", verticeAtual);
 
-        PonteiroNO atual = grafo->lista[verticeAtual];
-        while (atual != NULL)
-        {
-            if (!visitado[atual->vertice])
-            {
+        PonteiroNo atual = grafo->listaAdjacentes[verticeAtual];
+        while (atual != NULL) {
+            if (!visitado[atual->vertice]) {
                 fila[tras++] = atual->vertice;
                 visitado[atual->vertice] = 1;
             }

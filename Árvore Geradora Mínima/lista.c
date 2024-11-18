@@ -1,19 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct no {
-    int vertice, peso;
-    struct no *proximo;
-} NO;
-
-typedef NO *PonteiroNO;
-
-typedef struct {
-    PonteiroNO *lista;
-    int numVertices;
-} Grafo;
-
-typedef Grafo *PonteiroGrafo;
+#include "../CodeBase/lista.h"
 
 typedef struct {
     int origem, destino, peso;
@@ -28,16 +16,16 @@ PonteiroGrafo criarGrafo(int numVertices) {
     
     PonteiroGrafo grafo = malloc(sizeof(Grafo));
     grafo->numVertices = numVertices;
-    grafo->lista = malloc(numVertices * sizeof(PonteiroNO));
+    grafo->listaAdjacentes = malloc(numVertices * sizeof(PonteiroNo));
 
     for (indice = 0; indice < numVertices; indice++)
-        grafo->lista[indice] = NULL;
+        grafo->listaAdjacentes[indice] = NULL;
 
     return grafo;
 }
 
-PonteiroNO inserirLista(PonteiroNO lista, int vertice, int peso) {
-    PonteiroNO novoNo = malloc(sizeof(NO));
+PonteiroNo inserirListaComPeso(PonteiroNo lista, int vertice, int peso) {
+    PonteiroNo novoNo = malloc(sizeof(No));
     
     novoNo->vertice = vertice;
     novoNo->peso = peso;
@@ -46,40 +34,9 @@ PonteiroNO inserirLista(PonteiroNO lista, int vertice, int peso) {
     return novoNo;
 }
 
-void adicionarAresta(PonteiroGrafo grafo, int vertice1, int vertice2, int peso) {
-    grafo->lista[vertice1] = inserirLista(grafo->lista[vertice1], vertice2, peso);
-    grafo->lista[vertice2] = inserirLista(grafo->lista[vertice2], vertice1, peso);
-}
-
-PonteiroNO removerLista(PonteiroNO lista, int vertice) {
-    PonteiroNO proximo;
-    if (lista == NULL)
-        return NULL;
-    else if (lista->vertice == vertice) {
-        proximo = lista->proximo;
-        free(lista);
-        return proximo;
-    } else {
-        lista->proximo = removerLista(lista->proximo, vertice);
-        return lista;
-    }
-}
-
-void liberarLista(PonteiroNO lista) {
-    if (lista != NULL) {
-        liberarLista(lista->proximo);
-        free(lista);
-    }
-}
-
-void liberarGrafo(PonteiroGrafo grafo) {
-    int indice;
-    for (indice = 0; indice < grafo->numVertices; indice++)
-        liberarLista(grafo->lista[indice]);
-
-    free(grafo->lista);
-    free(grafo);
-    return;
+void adicionarAresta(PonteiroGrafo grafo, int origem, int destino, int peso) {
+    grafo->listaAdjacentes[origem] = inserirListaComPeso(grafo->listaAdjacentes[origem], destino, peso);
+    grafo->listaAdjacentes[destino] = inserirListaComPeso(grafo->listaAdjacentes[destino], origem, peso);
 }
 
 UnionFind* criarUnionFind(int numVertices) {
@@ -129,7 +86,7 @@ void gerarArvoreMinima(PonteiroGrafo grafo) {
     int pesoTotal = 0;
 
     for (int i = 0; i < grafo->numVertices; i++) {
-        PonteiroNO auxiliar = grafo->lista[i];
+        PonteiroNo auxiliar = grafo->listaAdjacentes[i];
         while (auxiliar != NULL) {
             if (i < auxiliar->vertice) {
                 arestas[numArestas].origem = i;

@@ -3,7 +3,6 @@
 
 #include "lista.h"
 
-
 PonteiroGrafo criarGrafo(int numVertices) {
     int indice;
     PonteiroGrafo grafo = malloc(sizeof(Grafo));
@@ -83,16 +82,16 @@ void imprimirArestas(PonteiroGrafo grafo) {
 }
 
 /** TODO:
- * (Implementados em Matriz, mas não lista)
+ * (Implementados em Matriz, mas não lista) (EXTRA)
  * GRAU, POPULARIDADE, RECOMENDAÇÕES
  * 
- * (Não Implementados, talvez não obrigatório)
+ * (Não Implementados, talvez não obrigatório) (EXTRA)
  * ENCONTRAR COMPONENTES (componentes conexos)
- * ENCONTRAR CAMINHO
- * IMPRIMIR CAMINHO e CAMINHO REVERSO
  * ORDENAÇÃO TOPOLÓGICA
  * 
  * (Não Implementados, obrigatório)
+ * ENCONTRAR CAMINHO
+ * IMPRIMIR CAMINHO e CAMINHO REVERSO
  * BUSCA EM PROFUNDIDADE
  * BUSCA EM LARGURA
  * DIJIKSTRA

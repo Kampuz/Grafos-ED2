@@ -5,10 +5,10 @@
 
 
 int *encontrarCaminhos(PonteiroGrafo grafo, int inicio) {
-    int i, *pai = (int*)malloc(grafo->numVertices * sizeof(int));
+    int indice, *pai = (int*)malloc(grafo->numVertices * sizeof(int));
 
-    for (i = 0; i < grafo->numVertices; i++)
-        pai[i] = -1;
+    for (indice = 0; indice < grafo->numVertices; indice++)
+        pai[indice] = -1;
 
     buscaEmProfundidade(grafo, pai, inicio, inicio);
 
@@ -16,10 +16,10 @@ int *encontrarCaminhos(PonteiroGrafo grafo, int inicio) {
 }
 
 void buscaEmProfundidade(PonteiroGrafo grafo, int *pai, int p, int v) {
-    PonteiroNO no;
+    PonteiroNo no;
     pai[v] = p;
 
-    for (no = grafo->lista[v]; no != NULL; no = no->proximo)
+    for (no = grafo->listaAdjacentes[v]; no != NULL; no = no->proximo)
         if (pai[no->vertice] == -1)
             buscaEmProfundidade(grafo, pai, v, no->vertice);
 }
@@ -41,7 +41,7 @@ void imprimirCaminho(int vertice, int *pai) {
 
 int main() {
     PonteiroGrafo grafo;
-    int numVertices, i, inicio;
+    int numVertices, indice, inicio;
     int *pai;
 
     printf("Digite o número de vértices do grafo: ");
@@ -66,16 +66,16 @@ int main() {
     pai = encontrarCaminhos(grafo, inicio);
     
     printf("\nCaminhos a partir do vértice %d:\n", inicio);
-    for (i = 0; i < numVertices; i++)
+    for (indice = 0; indice < numVertices; indice++)
     {
-        if (pai[i] != -1)
+        if (pai[indice] != -1)
         {
-            printf("Caminho até %d (ordem inversa):", i);
-            imprimirCaminhoReverso(i, pai);
+            printf("Caminho até %d (ordem inversa):", indice);
+            imprimirCaminhoReverso(indice, pai);
             printf("\n");
 
-            printf("Caminho até %d (ordem normal): ", i);
-            imprimirCaminho(i, pai);
+            printf("Caminho até %d (ordem normal): ", indice);
+            imprimirCaminho(indice, pai);
             printf("\n");
         }
     }
