@@ -2,225 +2,270 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#include "../CodeBase/matriz.h"
+typedef struct no {
+    int v;
+    int peso;
+    struct no *prox;
+} No;
 
-typedef struct item {
+typedef No *PonteiroNo;
+
+typedef struct grafo {
+    int n;
+    PonteiroNo *adj;
+} Grafo;
+
+typedef Grafo *PonteiroGrafo;
+
+typedef struct {
     int prioridade;
     int vertice;
 } Item;
 
-typedef struct heap{
-    Item *vertice;
+typedef struct {
+    Item *v;
     int *indice;
-    int numVertices, tamanho;
-} Heap;
+    int n, tamanho;
+} FP;
 
-typedef Heap *PonteiroHeap;
+typedef FP *PonteiroFP;
 
-PonteiroHeap criarHeap(int tamanho) {
-    PonteiroHeap heap = (PonteiroHeap)malloc(sizeof(Heap));
+int consultarPrioridade(PonteiroFP fila, int vertice);
+int filaVazia(PonteiroFP fila);
+int extrairMinimo(PonteiroFP fila);
+void atualizarPrioridade(PonteiroFP fila, int vertice, int novaPrioridade);
+void inserirElemento(PonteiroFP fila, int vertice, int prioridade);
+PonteiroFP criarFilaPrioridade(int capacidadeMaxima);
 
-    heap->vertice = (Item*)malloc(tamanho * sizeof(Item));
-    heap->indice = (int*)malloc(tamanho * sizeof(int));
-    heap->numVertices = 0;
-    heap->tamanho = tamanho;
-    
-    return heap;
-}
 
-void trocar(PonteiroHeap heap, int i, int j) {
-    Item auxiliar = heap->vertice[i];
-    heap->vertice[i] = heap->vertice[j];
-    heap->vertice[j] = auxiliar;
+int *dijkstra(PonteiroGrafo g, int s) {
+    int v, *pai = (int*)malloc(g->n * sizeof(int));
 
-    heap->indice[heap->vertice[i].vertice] = i;
-    heap->indice[heap->vertice[j].vertice] = j;
-}
+    PonteiroNo t;
+    PonteiroFP h = criarFilaPrioridade(g->n);
 
-void subir(PonteiroHeap heap, int i) {
-    int pai = (i - 1) / 2;
-    while ((i > 0) && (heap->vertice[i].prioridade < heap->vertice[pai].prioridade))
+    for (v = 0; v < g->n; v++)
     {
-        trocar(heap, i, pai);
-        i = pai;
-        pai = (i - 1) / 2;
-    }
-}
-
-void descer(PonteiroHeap heap, int i) {
-    int esq = 2 * i + 1;
-    int dir = 2 * i + 2;
-    int menor = i;
-
-    if ((esq < heap->numVertices) && (heap->vertice[esq].prioridade < heap->vertice[menor].prioridade))
-        menor = esq;
-    if ((dir < heap->numVertices) && (heap->vertice[dir].prioridade < heap->vertice[menor].prioridade))
-        menor = dir;
-    if (menor == i) { 
-        trocar(heap, i, menor);
-        descer(heap, menor);
-    }
-}
-
-void inserirHeap(PonteiroHeap heap, int vertice, int prioridade) {
-    if (heap->numVertices == heap->tamanho)
-    {
-        printf("ERRO: Heap cheia.\n");
-        return;
-    }
-    
-    heap->vertice[heap->numVertices].vertice = vertice;
-    heap->vertice[heap->numVertices].prioridade = prioridade;
-    heap->indice[vertice] = heap->numVertices;
-    heap->numVertices++;
-    subir(heap, (heap->numVertices - 1));
-}
-
-void diminuirPrioridade(PonteiroHeap heap, int vertice, int prioridade) {
-    int i = heap->indice[vertice];
-    
-    heap->vertice[i].prioridade = prioridade;
-    
-    subir(heap, i);
-}
-
-int extrairMinimo(PonteiroHeap heap) {
-    if (heap->numVertices == 0)
-    {
-        printf("ERRO: Heap vazia.\n");
-        return -1;
-    }
-    
-    int verticeMinimo = heap->vertice[0].vertice;
-    heap->numVertices--;
-    heap->vertice[0] = heap->vertice[heap->numVertices];
-    heap->indice[heap->vertice[0].vertice] = 0;
-    descer(heap, 0);
-    return verticeMinimo;
-}
-
-int prioridade(PonteiroHeap heap, int vertice) {
-    return heap->vertice[heap->indice[vertice]].prioridade;
-}
-
-int heapVazio(PonteiroHeap heap) {
-    return heap->numVertices == 0;
-}
-
-int *dijkstra(PonteiroGrafo grafo, int verticeInicial) {
-    int vertice;
-    int *pai = (int*)malloc(grafo->numVertices * sizeof(int));
-    int *distancias = (int*)malloc(grafo->numVertices * sizeof(int));
-
-    if (!pai || !distancias)
-    {
-        printf("Erro: Falha ao alocar memória.\n");
-        exit(1);
-    }
-    
-
-    for (vertice = 0; vertice < grafo->numVertices; vertice++)
-    {
-        distancias[vertice] = INT_MAX;
-        pai[vertice] = -1;
+        pai[v] = -1;
+        inserirElemento(h, v, INT_MAX);
     }
 
-    distancias[verticeInicial] = 0;
+    pai[s] = s;
+    atualizarPrioridade(h, s, 0);
 
-    PonteiroHeap heap = criarHeap(grafo->numVertices);
-    if (!heap)
+    while (!filaVazia(h))
     {
-        printf("Erro: Falha ao criar o heap.\n");
-        free(pai);
-        free(distancias);
-        exit(1);
-    }
-    
-
-    for (vertice = 0; vertice < grafo->numVertices; vertice++)
-    {
-        inserirHeap(heap, vertice, distancias[vertice]);
-    }
-    
-    diminuirPrioridade(heap, verticeInicial, 0);
-
-    while (!heapVazio(heap))
-    {
-        vertice = extrairMinimo(heap);
-        if (vertice == -1)
-            break;
-
-        if (distancias[vertice] != INT_MAX)
-            for (int indice = 0; indice < grafo->numVertices; indice++)
-                if ((grafo->matriz[vertice][indice] != INT_MAX) && (distancias[vertice] + grafo->matriz[vertice][indice] < distancias[indice]))
+        v = extrairMinimo(h);
+        if (consultarPrioridade(h, v) != INT_MAX)
+        {
+            for (t = g->adj[v]; t != NULL; t = t->prox)
+            {
+                if (consultarPrioridade(h, v) + t->peso < consultarPrioridade(h, t->v))
                 {
-                    distancias[indice] = distancias[vertice] + grafo->matriz[vertice][indice];
-                    pai[indice] = vertice;
-                    diminuirPrioridade(heap, indice, distancias[indice]);
+                    atualizarPrioridade(h, t->v, consultarPrioridade(h, v) + t->peso);
+                    pai[t->v] = v;
                 }
+            }
+        }
     }
-    free(heap->vertice);
-    free(heap->indice);
-    free(heap);
 
     return pai;
 }
 
-void imprimirDjisktra(PonteiroGrafo grafo, int *pais, int verticeInicial) {
-    printf("Pais de cada vértice a partir do vértice %d:\n", verticeInicial);
-    for (int i = 0; i < grafo->numVertices; i++)
+
+PonteiroFP criarFilaPrioridade(int capacidadeMaxima) {
+    PonteiroFP fila = (PonteiroFP)malloc(sizeof(FP));
+    fila->v = (Item*)malloc(capacidadeMaxima * sizeof(Item));
+    fila->indice = (int*)malloc(capacidadeMaxima * sizeof(int));
+    fila->n = 0;
+    fila->tamanho = capacidadeMaxima;
+
+    for (int i = 0; i < capacidadeMaxima; i++)
     {
-        printf("Vértice %d: Pai = %d\n", i, pais[i]);
+        fila->indice[i] = -1;
+    }
+    
+    return fila;
+}
+
+void inserirElemento(PonteiroFP fila, int vertice, int prioridade) {
+    if (fila->n >= fila->tamanho)
+    {
+        printf("Erro: Fila de prioridade cheia.\n");
+        return;
     }
 
-    free(pais);
+    fila->v[fila->n].vertice = vertice;
+    fila->v[fila->n].prioridade = prioridade;
+    fila->indice[vertice] = fila->n;
+    fila->n++;
+
+    // Refazendo o heap após a inserção
+    int posicao = fila->n - 1;
+    while (posicao > 0 && fila->v[posicao].prioridade < fila->v[(posicao - 1) / 2].prioridade)
+    {
+        Item aux = fila->v[posicao];
+        fila->v[posicao] = fila->v[(posicao - 1) / 2];
+        fila->v[(posicao - 1) / 2] = aux;
+
+        fila->indice[fila->v[posicao].vertice] = posicao;
+        fila->indice[fila->v[(posicao - 1) / 2].vertice] = (posicao - 1) / 2;
+
+        posicao = (posicao - 1) / 2;
+    }
 }
+
+void atualizarPrioridade(PonteiroFP fila, int vertice, int novaPrioridade) {
+    int posicao = fila->indice[vertice];
+    if (posicao == -1)
+    {
+        printf("Erro: Vértice não encontrado na fila.\n");
+        return;
+    }
+
+    fila->v[posicao].prioridade = novaPrioridade;
+
+    // Refazendo o heap após a atualização
+    while (posicao > 0 && fila->v[posicao].prioridade < fila->v[(posicao - 1) / 2].prioridade)
+    {
+        Item aux = fila->v[posicao];
+        fila->v[posicao] = fila->v[(posicao - 1) / 2];
+        fila->v[(posicao - 1) / 2] = aux;
+
+        fila->indice[fila->v[posicao].vertice] = posicao;
+        fila->indice[fila->v[(posicao - 1) / 2].vertice] = (posicao - 1) / 2;
+
+        posicao = (posicao - 1) / 2;
+    }
+}
+
+int extrairMinimo(PonteiroFP fila) {
+    if (fila->n == 0)
+    {
+        printf("Erro: Fila de prioridade vazia.\n");
+        return -1;
+    }
+
+    int verticeMinimo = fila->v[0].vertice;
+
+    // Coloca o último elemento no topo e refaz o heap
+    fila->n--;
+    fila->v[0] = fila->v[fila->n];
+    fila->indice[fila->v[0].vertice] = 0;
+    fila->indice[verticeMinimo] = -1;
+
+    int posicao = 0;
+    while (posicao * 2 + 1 < fila->n)
+    {
+        int filhoEsquerdo = posicao * 2 + 1;
+        int filhoDireito = posicao * 2 + 2;
+        int menor = filhoEsquerdo;
+    
+        if (filhoDireito < fila->n && fila->v[filhoDireito].prioridade < fila->v[filhoEsquerdo].prioridade)
+        {
+            menor = filhoDireito;
+        }
+
+        if (fila->v[posicao].prioridade <= fila->v[menor].prioridade)
+        {
+            break;
+        }
+        
+        // Troca entre o elemento atual e o filho de menor prioridade
+        Item aux = fila->v[posicao];
+        fila->v[posicao] = fila->v[menor];
+        fila->v[menor] = aux;
+
+        fila->indice[fila->v[posicao].vertice] = posicao;
+        fila->indice[fila->v[menor].vertice] = menor;
+
+        posicao = menor;
+    }
+
+    return verticeMinimo;
+}
+
+int filaVazia(PonteiroFP fila) {
+    return fila->n == 0;
+}
+
+int consultarPrioridade(PonteiroFP fila, int vertice) {
+    int posicao = fila->indice[vertice];
+    if (posicao == -1)
+    {
+        return INT_MAX;
+    }
+    
+    return fila->v[posicao].prioridade;
+}
+
+void adicionarAresta(PonteiroGrafo grafo, int origem, int destino, int peso) {
+    PonteiroNo novaAdj = (PonteiroNo)malloc(sizeof(No));
+    novaAdj->v = destino;
+    novaAdj->peso = peso;
+    novaAdj->prox = grafo->adj[origem];
+    grafo->adj[origem] = novaAdj;
+}
+
+/*
 
 int main() {
-    int numVertices = 6;
-    PonteiroGrafo grafo = criarGrafo(numVertices);
-
-    inserirAresta(grafo, 0, 1, 4);
-    inserirAresta(grafo, 0, 2, 2);
-    inserirAresta(grafo, 1, 2, 5);
-    inserirAresta(grafo, 1, 3, 10);
-    inserirAresta(grafo, 2, 4, 3);
-    inserirAresta(grafo, 4, 3, 4);
-    inserirAresta(grafo, 3, 5, 11);
-
-    for (int i = 0; i < numVertices; i++)
-        for (int j = 0; j < numVertices; j++)
-            if (grafo->matriz[i][j] != INT_MAX)
-                grafo->matriz[j][i] = grafo->matriz[i][j];
-    
-    printf("Matriz de Adjacência:\n");
-    for (int i = 0; i < numVertices; i++)
+    int numeroVertices = 5;
+    PonteiroGrafo grafo = (PonteiroGrafo)malloc(sizeof(Grafo));
+    grafo->n = numeroVertices;
+    grafo->adj = (PonteiroNo*)malloc(numeroVertices * sizeof(PonteiroNo));
+    if (grafo->adj == NULL)
     {
-        for (int j = 0; j < numVertices; j++)
-            if (grafo->matriz[i][j] == INT_MAX)
-                printf("INF ");
-            else
-                printf("%3d ", grafo->matriz[i][j]);
-
-        printf("\n");
+        fprintf(stderr, "Erro ao alocar memória para listasAdj\n");
+        exit(EXIT_FAILURE);
     }
+
+    for (int i = 0; i < numeroVertices; i++)
+    {
+        grafo->adj[i] = NULL;
+    }
+
+    adicionarAresta(grafo, 0, 1, 10);
+    adicionarAresta(grafo, 0, 4, 5);
+    adicionarAresta(grafo, 1, 2, 1);
+    adicionarAresta(grafo, 1, 4, 2);
+    adicionarAresta(grafo, 2, 3, 4);
+    adicionarAresta(grafo, 3, 0, 7);
+    adicionarAresta(grafo, 3, 2, 6);
+    adicionarAresta(grafo, 4, 1, 3);
+    adicionarAresta(grafo, 4, 2, 9);
+    adicionarAresta(grafo, 4, 3, 2);
 
     int verticeInicial = 0;
+    int *caminhos = dijkstra(grafo, verticeInicial);
 
-    printf("Calculando Dijkstra...\n");
-    int *pais = dijkstra(grafo, verticeInicial);
-    printf("Dijkstra calculado com sucesso.\n");
-
-    printf("Imprimindo Dijkstra...\n");
-    imprimirDjisktra(grafo, pais, verticeInicial);
-    printf("Dijkstra imprimido com sucesso.\n");
-
-    for (int i = 0; i < grafo->numVertices; i++)
+    printf("Menor caminho a partir do vértice %d:\n", verticeInicial);
+    for (int i = 0; i < numeroVertices; i++)
     {
-        free(grafo->matriz[i]);
+        if (caminhos[i] == -1)
+        {
+            printf("Vértice %d: Sem caminho.\n", i);
+        } else {
+            printf("Vértice %d: Pai %d.\n", i, caminhos[i]);
+        }
     }
-    
-    free(grafo->matriz);
+
+    for (int i = 0; i < numeroVertices; i++)
+    {
+        PonteiroNo atual = grafo->adj[i];
+
+        while (atual != NULL)
+        {
+            PonteiroNo auxiliar = atual;
+            atual = atual->prox;
+            free(auxiliar);
+        }
+    }
+
+    free(grafo->adj);
     free(grafo);
+    free(caminhos);
     return 0;
 }
+
+*/

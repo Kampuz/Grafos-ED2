@@ -51,7 +51,19 @@ PonteiroGrafo criarGrafo(int numVertices);
 void gerarArvoreMinima(PonteiroGrafo grafo);
 
 // DIJKSTRA
-void imprimirDjisktra(PonteiroGrafo grafo, int *pais, int verticeInicial);
-int *dijkstra(PonteiroGrafo grafo, int verticeInicial);
 
+typedef struct {
+    int prioridade;
+    int vertice;
+} Item;
+
+typedef struct {
+    Item *v;
+    int *indice;
+    int n, tamanho;
+} FP;
+
+typedef FP *PonteiroFP;
+
+PonteiroFP criarFilaPrioridade(int capacidadeMaxima);
 #endif
