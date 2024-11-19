@@ -41,8 +41,22 @@ PonteiroNo inserirLista(PonteiroNo lista, int vertice) {
     return novoNo;
 }
 
+PonteiroNo inserirListaComPeso(PonteiroNo lista, int vertice, int peso) {
+    PonteiroNo novoNo = malloc(sizeof(No));
+    
+    novoNo->vertice = vertice;
+    novoNo->peso = peso;
+    novoNo->proximo = lista;
+
+    return novoNo;
+}
+
 void adicionarAresta(PonteiroGrafo grafo, int origem, int destino) {
     grafo->listaAdjacentes[destino] = inserirLista(grafo->listaAdjacentes[destino], origem);
+}
+
+void adicionarArestaComPeso(PonteiroGrafo grafo, int origem, int destino, int peso) {
+    grafo->listaAdjacentes[origem] = inserirListaComPeso(grafo->listaAdjacentes[origem], destino, peso);
 }
 
 PonteiroNo removerLista(PonteiroNo lista, int vertice) {
@@ -81,22 +95,9 @@ void imprimirArestas(PonteiroGrafo grafo) {
             printf("{%d,%d}\n", origem, auxiliar->vertice);
 }
 
-/** TODO:
- * (Implementados em Matriz, mas não lista) (EXTRA)
- * GRAU, POPULARIDADE, RECOMENDAÇÕES
- * 
- * (Não Implementados, talvez não obrigatório) (EXTRA)
- * ENCONTRAR COMPONENTES (componentes conexos)
- * ORDENAÇÃO TOPOLÓGICA
- * 
- * (Não Implementados, obrigatório)
- * ENCONTRAR CAMINHO
- * IMPRIMIR CAMINHO e CAMINHO REVERSO
- * BUSCA EM PROFUNDIDADE
- * BUSCA EM LARGURA
- * DIJIKSTRA
- * ÁRVORE GERADORA MÍNIMA
- */
+int compararPesoArestas(const void* a, const void* b) {
+    return ((Aresta*)a)->peso - ((Aresta*)b)->peso;
+}
 
 /*
 int main() {

@@ -3,7 +3,7 @@
 
 #include "../CodeBase/lista.h"
 
-void buscaemLargura(PonteiroGrafo grafo, int inicio) {
+void buscaEmLargura(PonteiroGrafo grafo, int inicio) {
     int *visitado = (int*)malloc(grafo->numVertices * sizeof(int));
 
     for (int i = 0; i < grafo->numVertices; i++)

@@ -4,40 +4,8 @@
 #include "../CodeBase/lista.h"
 
 typedef struct {
-    int origem, destino, peso;
-} Aresta;
-
-typedef struct {
     int *parente, *rank, numVertices;
 } UnionFind;
-
-PonteiroGrafo criarGrafo(int numVertices) {
-    int indice;
-    
-    PonteiroGrafo grafo = malloc(sizeof(Grafo));
-    grafo->numVertices = numVertices;
-    grafo->listaAdjacentes = malloc(numVertices * sizeof(PonteiroNo));
-
-    for (indice = 0; indice < numVertices; indice++)
-        grafo->listaAdjacentes[indice] = NULL;
-
-    return grafo;
-}
-
-PonteiroNo inserirListaComPeso(PonteiroNo lista, int vertice, int peso) {
-    PonteiroNo novoNo = malloc(sizeof(No));
-    
-    novoNo->vertice = vertice;
-    novoNo->peso = peso;
-    novoNo->proximo = lista;
-
-    return novoNo;
-}
-
-void adicionarAresta(PonteiroGrafo grafo, int origem, int destino, int peso) {
-    grafo->listaAdjacentes[origem] = inserirListaComPeso(grafo->listaAdjacentes[origem], destino, peso);
-    grafo->listaAdjacentes[destino] = inserirListaComPeso(grafo->listaAdjacentes[destino], origem, peso);
-}
 
 UnionFind* criarUnionFind(int numVertices) {
     UnionFind* uf = malloc(sizeof(UnionFind));
@@ -76,10 +44,6 @@ void unionSets(UnionFind* uf, int x, int y) {
     }
 }
 
-int compararArestas(const void* a, const void* b) {
-    return ((Aresta*)a)->peso - ((Aresta*)b)->peso;
-}
-
 void gerarArvoreMinima(PonteiroGrafo grafo) {
     Aresta* arestas = malloc(grafo->numVertices * grafo->numVertices * sizeof(Aresta));
     int numArestas = 0;
@@ -98,7 +62,7 @@ void gerarArvoreMinima(PonteiroGrafo grafo) {
         }
     }
 
-    qsort(arestas, numArestas, sizeof(Aresta), compararArestas);
+    qsort(arestas, numArestas, sizeof(Aresta), compararPesoArestas);
 
     UnionFind* uf = criarUnionFind(grafo->numVertices);
 

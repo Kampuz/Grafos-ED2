@@ -2,74 +2,24 @@
 #include <stdlib.h>
 #include <limits.h>
 
-typedef struct no {
-    int vertice;
-    int peso;
-    struct no *proximo;
-} NO;
+#include "..\CodeBase\lista.h"
 
-typedef NO *PonteiroNO;
-
-typedef struct {
-    PonteiroNO *lista;
-    int numVertices;
-} Grafo;
-
-typedef Grafo *PonteiroGrafo;
-
-typedef struct item
-{
+typedef struct item {
     int prioridade;
     int vertice;
-} ITEM;
+} Item;
 
-typedef struct heap
-{
-    ITEM *itens;
+typedef struct heap {
+    Item *itens;
     int *indice;
     int tamanhoMaximo, tamanho;
-} HEAP;
+} Heap;
 
-typedef HEAP *PonteiroHeap;
-
-PonteiroGrafo criarGrafo(int numVertices) {
-    PonteiroGrafo grafo = (PonteiroGrafo)malloc(sizeof(Grafo));
-    grafo->numVertices = numVertices;
-    grafo->lista = (PonteiroNO *)malloc(numVertices * sizeof(PonteiroNO));
-    
-    for (int i = 0; i < numVertices; i++)
-        grafo->lista[i] = NULL;
-    
-    return grafo;
-}
-
-void adicionarAresta(PonteiroGrafo grafo, int origem, int destino, int peso) {
-    PonteiroNO  novoNo = (PonteiroNO)malloc(sizeof(NO));
-    novoNo->vertice = destino;
-    novoNo->peso = peso;
-    novoNo->proximo = grafo->lista[origem];
-    grafo->lista[origem] = novoNo;
-}
-
-void liberarGrafo(PonteiroGrafo grafo) {
-    for (int i = 0; i < grafo->numVertices; i++)
-    {
-        PonteiroNO noAtual = grafo->lista[i];
-        while (noAtual != NULL)
-        {
-            PonteiroNO aux = noAtual;
-            noAtual = noAtual->proximo;
-            free(aux);
-        }
-    }
-
-    free(grafo->lista);
-    free(grafo);
-}
+typedef Heap *PonteiroHeap;
 
 PonteiroHeap criarHeap(int tamanhoMaximo) {
-    PonteiroHeap heap = (PonteiroHeap)malloc(sizeof(HEAP));
-    heap->itens = (ITEM *)malloc(tamanhoMaximo * sizeof(ITEM));
+    PonteiroHeap heap = (PonteiroHeap)malloc(sizeof(Heap));
+    heap->itens = (Item *)malloc(tamanhoMaximo * sizeof(Item));
     heap->indice = (int *)malloc(tamanhoMaximo * sizeof(int));
     heap->tamanho = 0;
     heap->tamanhoMaximo = tamanhoMaximo;
@@ -93,7 +43,7 @@ void heapify(PonteiroHeap heap, int algo) {
     
     if (menor != algo)
     {
-        ITEM aux = heap->itens[algo];
+        Item aux = heap->itens[algo];
         heap->itens[algo] = heap->itens[menor];
         heap->itens[menor] = aux;
 
@@ -104,7 +54,6 @@ void heapify(PonteiroHeap heap, int algo) {
     }
 }
 
-
 void insere(PonteiroHeap heap, int vertice, int prioridade) {
     int i = heap->tamanho++;
     heap->itens[i].vertice = vertice;
@@ -113,7 +62,7 @@ void insere(PonteiroHeap heap, int vertice, int prioridade) {
 
     while (i > 0 && heap->itens[(i - 1) / 2].prioridade > heap->itens[i].prioridade)
     {
-        ITEM aux = heap->itens[i];
+        Item aux = heap->itens[i];
         heap->itens[i] = heap->itens[(i - 1) / 2];
         heap->itens[(i - 1) / 2] = aux;
 
@@ -138,7 +87,7 @@ int minimo(PonteiroHeap heap) {
 
 int prioridade(PonteiroHeap heap, int vertice) {
     int i = heap->indice[vertice];
-    return ((i != -1) ? heap->itens[i].prioridade : IN);
+    return ((i != -1) ? heap->itens[i].prioridade : INT_MAX);
 }
 
 void diminuirPrioridade(PonteiroHeap heap, int vertice, int novaPrioridade) {
@@ -147,7 +96,7 @@ void diminuirPrioridade(PonteiroHeap heap, int vertice, int novaPrioridade) {
 
     while (i > 0 && heap->itens[(i - 1) / 2].prioridade > heap->itens[i].prioridade)
     {
-        ITEM aux = heap->itens[i];
+        Item aux = heap->itens[i];
         heap->itens[i] = heap->itens[(i - 1) / 2];
         heap->itens[(i - 1) / 2] = aux;
 
@@ -158,13 +107,12 @@ void diminuirPrioridade(PonteiroHeap heap, int vertice, int novaPrioridade) {
     
 }
 
-int *dijkstra(PonteiroGrafo grafo, int inicio) {
+int* dijkstra(PonteiroGrafo grafo, int inicio) {
     int vertice, *pai = (int*)malloc(grafo->numVertices * sizeof(int));
-    PonteiroNO no;
+    PonteiroNo no;
     PonteiroHeap heap = criarHeap(grafo->numVertices);
     
-    for (vertice = 0; vertice < grafo->numVertices; vertice++)
-    {
+    for (vertice = 0; vertice < grafo->numVertices; vertice++) {
         pai[vertice] = -1;
         insere(heap, vertice, INT_MAX);
     }
@@ -172,14 +120,12 @@ int *dijkstra(PonteiroGrafo grafo, int inicio) {
     pai[inicio] = inicio;
     diminuirPrioridade(heap, inicio, 0);
 
-    while (!vazia(heap))
-    {
+    while (!vazia(heap)) {
         vertice = minimo(heap);
 
         if (prioridade(heap, vertice) != INT_MAX)
-            for (no = grafo->lista[vertice]; no != NULL; no = no->proximo)
-                if (prioridade(heap, vertice) + no->peso < prioridade(heap, no->vertice))
-                {
+            for (no = grafo->listaAdjacentes[vertice]; no != NULL; no = no->proximo)
+                if (prioridade(heap, vertice) + no->peso < prioridade(heap, no->vertice)) {
                     diminuirPrioridade(heap, no->vertice, prioridade(heap, vertice) + no->peso);
                     pai[no->vertice] = vertice;
                 }
@@ -188,6 +134,7 @@ int *dijkstra(PonteiroGrafo grafo, int inicio) {
     return pai;
 }
 
+/*
 int main() {
     int numVertices = 5;
     PonteiroGrafo grafo = criarGrafo(numVertices);
@@ -214,3 +161,4 @@ int main() {
     liberarGrafo(grafo);
     return 0;
 }
+*/
