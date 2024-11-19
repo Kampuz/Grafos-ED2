@@ -1,6 +1,11 @@
-Know issues:
+# Algoritmo de Grafos
 
-    MATRIZ:
-		Arvore Geradora nao esta reconhecendo peso;
+Known issues:
 
-    Djisktra: retorna -1 e da core dump na main principal.
+MATRIZ:
+
+* Arvore Geradora nao esta reconhecendo peso;
+
+Djisktra:
+
+* retorna -1 e da core dump na main principal.
