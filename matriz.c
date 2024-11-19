@@ -208,16 +208,8 @@ int main() {
                 break;
 
             case 11:
-                if (grafo == NULL)
-                {
-                    printf("O grafo não foi criado.\n");
-                }  else {
-                    printf("Digite o vértice de origem para o algoritmo de Dijkstra: ");
-                    scanf("%d", &origem);
-
-                    caminho = dijkstra(grafo, origem);
-                    imprimirDjisktra(grafo, caminho, origem);
-                }
+                printf("Infelizmente, não consegui integrar o Djisktra no main.\n");
+                printf("Favor executá-lo em Djisktra/matriz.c\n");
                 break;
 
         case 0:
